@@ -1,0 +1,21 @@
+* boot xv6
+- 获取源码
+#+BEGIN_SRC bash
+git clone git://github.com/mit-pdos/xv6-public.git
+#+END_SRC
+
+- 安装bochs
+#+BEGIN_SRC bash
+apt-get install -y build-essential xorg-dev bison g++ libgtk2.0-dev bochs bochs-x bochs-sdl nasm wget
+
+cd /opt && sudo wget https://nchc.dl.sourceforge.net/project/bochs/bochs/2.6.8/bochs-2.6.8.tar.gz
+sudo tar -xvf bochs-2.6.8.tar.gz && cd bochs-2.6.8/ 
+
+./configure --enable-smp  --enable-x2apic --enable-debugger --enable-disasm --enable-vmx=2 --enable-configurable-msrs --enable-x86-64 --enable-a20-pin --enable-acpi --enable-pci
+sudo make -j8 && sudo make install
+#+END_SRC
+
+- 安装qemu
+#+BEGIN_SRC bash
+sudo apt-get install qemu-system-i386
+#+END_SRC
