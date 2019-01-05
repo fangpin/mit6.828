@@ -1,4 +1,4 @@
-* boot xv6
+* Lab1 Boot PC
 - 获取源码
 #+BEGIN_SRC bash
 git clone git://github.com/mit-pdos/xv6-public.git
@@ -19,3 +19,100 @@ sudo make -j8 && sudo make install
 #+BEGIN_SRC bash
 sudo apt-get install qemu-system-i386
 #+END_SRC
+
+** memory arrangement
+
++------------------+  <- 0xFFFFFFFF (4GB)
+|      32-bit      |
+|  memory mapped   |
+|     devices      |
+|                  |
+/\/\/\/\/\/\/\/\/\/\
+
+/\/\/\/\/\/\/\/\/\/\
+|                  |
+|      Unused      |
+|                  |
++------------------+  <- depends on amount of RAM
+|                  |
+|                  |
+| Extended Memory  |
+|                  |
+|                  |
++------------------+  <- 0x00100000 (1MB)
+|     BIOS ROM     |
++------------------+  <- 0x000F0000 (960KB)
+|  16-bit devices, |
+|  expansion ROMs  |
++------------------+  <- 0x000C0000 (768KB)
+|   VGA Display    |
++------------------+  <- 0x000A0000 (640KB)
+|                  |
+|    Low Memory    |
+|                  |
++------------------+  <- 0x00000000
+
+** 启动
+- 上电后， cs， ip默认指向bios最有16个bytes， 一条ljump跳转到bios的开始地方。
+- set up interrupt discriptor table, initialize devices (e.g. VGA, PCI bus)
+- search a boottable, read boot loader from disk, then transfer control to it.
+
+** 8086 16-bit registers
+four 16-bit general purpose registers:
+- AX
+- BX
+- CX
+- DX
+被分解为高8位和低8位。
+
+index registers （used for pointers): can not be composed into 8-bit registers.
+- SI
+- DI
+
+Segment registers:
+- CS : code segment (usually work with IP)
+- DS : data segment
+- SS : stack segment
+- ES : extra segment
+
+Flags registers (store information about the results of previous instruction, store in different bit)
+
+** 80386 32-bit registers
+16 bit general purpose registers are extented to 32-bit:
+- eax ebx ecx edx
+
+segment registers are still 16-bit, add another 2 new segment registers: 
+- FS GS (extra temporary segment registers like ES)
+
+** real mode
+only 2^20 bytes memory is available. (0x00000 - 0xFFFFF)
+
+16-bit registers to memory address: (two registers)
+16 * selector + offset
+
+** 16 bit protected mode
+*** virtual memory
+Only keep the data and code in memory that programs are currently using. Other coda and data are stored in temporarily on disk until they are
+needed again.
+
+each segment is assigned an entry in a descriptor table.
+
+** 32 bit protected mode
+- Segments can be large as 4G
+- Segments can be divided into smaller 4K size called pages.
+- Virtual memory works with pages instead of segments
+- Only parts of segment may be in memroy at any one time.
+
+
+** Interrupts
+Interrupts cause control to be passed to an interrupt handler.
+
+** software interrups
+interrupted by interrupt instructions
+
+** Assemble language
+*** instruction operands
+- registers
+- memory : usually an offset from beginning fo a segment.
+- immediate: store in instruction
+- implied: e.g add one
