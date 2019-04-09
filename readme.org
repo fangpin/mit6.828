@@ -85,7 +85,7 @@ segment registers are still 16-bit, add another 2 new segment registers:
 - FS GS (extra temporary segment registers like ES)
 
 ** real mode
-only 2^20 bytes memory is available. (0x00000 - 0xFFFFF)
+   only 2^20 bytes memory is available. (0x00000 - 0xFFFFF)
 
 16-bit registers to memory address: (two registers)
 16 * selector + offset
@@ -155,3 +155,7 @@ int coutbits(int data) {
 }
 #+END_SRC
 
+
+** boot loader
+1) real-mode to 32-bit protected mode. (access memory above 1M)
+2) read the kernel from the disk.
