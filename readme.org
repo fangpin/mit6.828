@@ -92,7 +92,7 @@ only 2^20 bytes memory is available. (0x00000 - 0xFFFFF)
 
 ** 16 bit protected mode
 *** virtual memory
-Only keep the data and code in memory that programs are currently using. Other coda and data are stored in temporarily on disk until they are
+Only keep the data and code in memory that programs are currently using. Other code and data are stored in temporarily on disk until they are
 needed again.
 
 each segment is assigned an entry in a descriptor table.
@@ -116,3 +116,42 @@ interrupted by interrupt instructions
 - memory : usually an offset from beginning fo a segment.
 - immediate: store in instruction
 - implied: e.g add one
+
+*** control structures
+use goto idea.
+
+- store comparison result in FLAGS registers.
+**** CMP: substruct
+unsigned:
+- ZF zero flag
+- CF carry flag
+
+Signed:
+- ZF
+- OF : overflow or underflow
+- SF
+
+**** Branch Instruction
+- nonconditional : jump anyway
+- conditional : jump conditional on the FLAGS registers
+
+*** when care about big/little endian
+- when binary data are transfored from different computer systems.
+- TCP/IP headers store in big endian (called network byte order)
+#+BEGIN_SRC bash
+bswap edx ; swap bytes of edx
+xchg ah,al ; swap bytes of ax
+#+END_SRC
+
+*** countting bits
+#+BEGIN_SRC c
+int coutbits(int data) {
+    int cnt = 0;
+    while (data != 0) {
+        data &= data - 1;
+        ++cnt;
+    }
+    return cnt;
+}
+#+END_SRC
+
